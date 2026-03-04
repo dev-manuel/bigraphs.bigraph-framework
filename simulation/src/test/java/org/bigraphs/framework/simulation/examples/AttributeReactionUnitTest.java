@@ -30,11 +30,11 @@ import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DynamicControl;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.core.impl.signature.DynamicSignatureBuilder;
-import org.bigraphs.framework.core.reactivesystem.BigraphMatch;
 import org.bigraphs.framework.core.reactivesystem.ParametricReactionRule;
 import org.bigraphs.framework.core.reactivesystem.TrackingMap;
 import org.bigraphs.framework.simulation.matching.AbstractBigraphMatcher;
 import org.bigraphs.framework.simulation.matching.MatchIterable;
+import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatch;
 import org.bigraphs.framework.simulation.matching.pure.PureReactiveSystem;
 import org.bigraphs.testing.BigraphUnitTestSupport;
 import org.junit.jupiter.api.BeforeAll;
@@ -102,11 +102,11 @@ public class AttributeReactionUnitTest implements BigraphUnitTestSupport {
         rs.setAgent(bigraph);
         rs.addReactionRule(rr);
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(bigraph, rr);
-        Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(bigraph, rr);
+        Iterator<PureBigraphMatch> iterator = match.iterator();
         int transition = 1;
         while (iterator.hasNext()) {
-            BigraphMatch<PureBigraph> next = iterator.next();
+            PureBigraphMatch next = iterator.next();
             PureBigraph result = rs.buildParametricReaction(bigraph, next, rr);
             toPNG(result, "s_" + transition, TARGET_DUMP_PATH);
             transition++;

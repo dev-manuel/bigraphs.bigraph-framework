@@ -16,11 +16,9 @@ package org.bigraphs.framework.simulation.modelchecking;
 
 import org.bigraphs.framework.core.Bigraph;
 import org.bigraphs.framework.core.Signature;
-import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.reactivesystem.BigraphMatch;
 import org.bigraphs.framework.core.reactivesystem.ReactionRule;
 import org.bigraphs.framework.simulation.matching.MatchIterable;
-import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatcher;
 
 /**
  * A breadth-first exploration strategy that selects only the
@@ -47,6 +45,6 @@ public class BFSFirstMatchStrategy<B extends Bigraph<? extends Signature<?>>> ex
      */
     @Override
     protected MatchIterable<BigraphMatch<B>> getBigraphMatches(ReactionRule<B> rule, B theAgent) {
-        return modelChecker.watch(() -> ((PureBigraphMatcher) modelChecker.getMatcher()).matchFirst((PureBigraph) theAgent, (ReactionRule<PureBigraph>) rule));
+        return modelChecker.watch(() -> (MatchIterable<BigraphMatch<B>>) (modelChecker.getMatcher()).matchFirst(theAgent, rule));
     }
 }

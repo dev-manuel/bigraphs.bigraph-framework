@@ -36,6 +36,7 @@ import org.bigraphs.framework.core.reactivesystem.ParametricReactionRule;
 import org.bigraphs.framework.core.reactivesystem.TrackingMap;
 import org.bigraphs.framework.simulation.matching.AbstractBigraphMatcher;
 import org.bigraphs.framework.simulation.matching.MatchIterable;
+import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatch;
 import org.bigraphs.framework.simulation.matching.pure.PureReactiveSystem;
 import org.bigraphs.framework.simulation.modelchecking.ModelCheckingOptions;
 import org.bigraphs.testing.BigraphUnitTestSupport;
@@ -88,8 +89,8 @@ public class TrackingMapExperimentTest implements BigraphUnitTestSupport {
             while (ruleExecCounter > 0) {
 //                int ruleIx = ruleExecCounter % 2 == 0 ? 1 : 0;
                 int ruleIx = 1;
-                MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(currentAgent, getReactionRulesMap().get("r" + ruleIx));
-                Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+                MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(currentAgent, getReactionRulesMap().get("r" + ruleIx));
+                Iterator<PureBigraphMatch> iterator = match.iterator();
                 if (!iterator.hasNext()) {
                     break;
                 }

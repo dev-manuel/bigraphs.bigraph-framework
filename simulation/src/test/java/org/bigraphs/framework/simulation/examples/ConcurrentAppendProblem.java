@@ -40,6 +40,7 @@ import org.bigraphs.framework.core.reactivesystem.analysis.ReactionGraphAnalysis
 import org.bigraphs.framework.simulation.encoding.BigraphCanonicalForm;
 import org.bigraphs.framework.simulation.matching.AbstractBigraphMatcher;
 import org.bigraphs.framework.simulation.matching.MatchIterable;
+import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatch;
 import org.bigraphs.framework.simulation.matching.pure.PureReactiveSystem;
 import org.bigraphs.framework.simulation.modelchecking.BigraphModelChecker;
 import org.bigraphs.framework.simulation.modelchecking.ModelCheckingOptions;
@@ -168,8 +169,8 @@ public class ConcurrentAppendProblem extends BaseExampleTestSupport {
 
         ReactionRule<PureBigraph> nextRR = nextRR();
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(a, nextRR);
-        Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(a, nextRR);
+        Iterator<PureBigraphMatch> iterator = match.iterator();
         while (iterator.hasNext()) {
             BigraphMatch<?> next = iterator.next();
             System.out.println("OK: " + next);

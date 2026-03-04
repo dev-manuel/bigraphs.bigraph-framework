@@ -209,7 +209,7 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
      * never {@code null}, but may be empty if no matches exist. Depends on {@link org.bigraphs.framework.simulation.matching.AbstractBigraphMatcher}.
      */
     protected MatchIterable<BigraphMatch<B>> getBigraphMatches(ReactionRule<B> rule, B theAgent) {
-        return modelChecker.watch(() -> modelChecker.getMatcher().match(theAgent, rule));
+        return modelChecker.watch(() -> (MatchIterable<BigraphMatch<B>>) modelChecker.getMatcher().matchAll(theAgent, rule));
     }
 
     /**

@@ -33,6 +33,7 @@ import org.bigraphs.framework.core.reactivesystem.ReactionRule;
 import org.bigraphs.framework.simulation.examples.BaseExampleTestSupport;
 import org.bigraphs.framework.simulation.matching.AbstractBigraphMatcher;
 import org.bigraphs.framework.simulation.matching.MatchIterable;
+import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatch;
 import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatcher;
 import org.bigraphs.framework.simulation.matching.pure.PureReactiveSystem;
 import org.bigraphs.framework.visualization.BigraphGraphvizExporter;
@@ -121,13 +122,13 @@ public class AddExample extends BaseExampleTestSupport {
         }
 
         public PureBigraph execute() throws IOException {
-            AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
+            PureBigraphMatcher matcher = (PureBigraphMatcher) AbstractBigraphMatcher.create(PureBigraph.class);
 
             PureBigraph agentTmp = getAgent();
             int cnt = 0;
             while (true) {
-                MatchIterable<BigraphMatch<PureBigraph>> match = ((PureBigraphMatcher) matcher).matchFirst(agentTmp, getReactionRulesMap().get("r0"));
-                Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+                MatchIterable<PureBigraphMatch> match = matcher.matchFirst(agentTmp, getReactionRulesMap().get("r0"));
+                Iterator<PureBigraphMatch> iterator = match.iterator();
                 if (!iterator.hasNext()) {
                     break;
                 }
@@ -142,10 +143,10 @@ public class AddExample extends BaseExampleTestSupport {
                 }
             }
 
-            MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agentTmp, getReactionRulesMap().get("r1"));
-            Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+            MatchIterable<PureBigraphMatch> match = matcher.match(agentTmp, getReactionRulesMap().get("r1"));
+            Iterator<PureBigraphMatch> iterator = match.iterator();
             if (iterator.hasNext()) {
-                BigraphMatch<PureBigraph> next = iterator.next();
+                PureBigraphMatch next = iterator.next();
                 System.out.println("NEXT: " + next);
                 agentTmp = buildParametricReaction(agentTmp, next, getReactionRulesMap().get("r1"));
                 BigraphGraphvizExporter.toPNG(agentTmp,

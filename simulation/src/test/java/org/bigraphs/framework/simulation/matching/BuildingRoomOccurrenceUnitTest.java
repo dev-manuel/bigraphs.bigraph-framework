@@ -23,9 +23,9 @@ import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceEx
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
-import org.bigraphs.framework.core.reactivesystem.BigraphMatch;
 import org.bigraphs.framework.core.reactivesystem.ParametricReactionRule;
 import org.bigraphs.framework.core.reactivesystem.ReactionRule;
+import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatch;
 import org.bigraphs.testing.BigraphUnitTestSupport;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -63,9 +63,9 @@ public class BuildingRoomOccurrenceUnitTest implements AbstractUnitTestSupport, 
 
         ReactionRule<PureBigraph> rr = new ParametricReactionRule<>(redex, redex);
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agent, rr);
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(agent, rr);
         int transition = 0;
-        for (BigraphMatch<?> next : match) {
+        for (PureBigraphMatch next : match) {
             createGraphvizOutput(agent, next, TARGET_DUMP_PATH + "test-1/", (transition++));
             System.out.println("NEXT: " + next);
         }
@@ -82,9 +82,9 @@ public class BuildingRoomOccurrenceUnitTest implements AbstractUnitTestSupport, 
 
         ReactionRule<PureBigraph> rr = new ParametricReactionRule<>(redex, redex);
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agent, rr);
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(agent, rr);
         int transition = 0;
-        for (BigraphMatch<?> next : match) {
+        for (PureBigraphMatch next : match) {
             createGraphvizOutput(agent, next, TARGET_DUMP_PATH + "test-2/", (transition++));
             System.out.println("NEXT: " + next);
         }
@@ -101,9 +101,9 @@ public class BuildingRoomOccurrenceUnitTest implements AbstractUnitTestSupport, 
 
         ReactionRule<PureBigraph> rr = new ParametricReactionRule<>(redex, redex);
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agent, rr);
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(agent, rr);
         int transition = 0;
-        for (BigraphMatch<?> next : match) {
+        for (PureBigraphMatch next : match) {
             createGraphvizOutput(agent, next, TARGET_DUMP_PATH + "test-3/", (transition++));
             System.out.println("NEXT: " + next);
         }

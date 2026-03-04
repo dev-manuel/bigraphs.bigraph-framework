@@ -40,7 +40,6 @@ import org.bigraphs.framework.core.impl.elementary.Placings;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
-import org.bigraphs.framework.core.reactivesystem.BigraphMatch;
 import org.bigraphs.framework.core.reactivesystem.ParametricReactionRule;
 import org.bigraphs.framework.core.reactivesystem.ReactionRule;
 import org.bigraphs.framework.core.reactivesystem.ReactiveSystemPredicate;
@@ -453,11 +452,11 @@ public class VendingMachineExample extends BaseExampleTestSupport implements Big
         PureBigraph param = null;
         PureBigraph newAgent = null;
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match2 = matcher.match(agent, insertCoinRR);
-        Iterator<BigraphMatch<PureBigraph>> iterator2 = match2.iterator();
+        MatchIterable<PureBigraphMatch> match2 = (MatchIterable<PureBigraphMatch>) matcher.match(agent, insertCoinRR);
+        Iterator<PureBigraphMatch> iterator2 = match2.iterator();
         JLibBigBigraphDecoder decoder = new JLibBigBigraphDecoder();
         if (iterator2.hasNext()) {
-            PureBigraphMatch match = (PureBigraphMatch) iterator2.next();
+            PureBigraphMatch match = iterator2.next();
             Match jLibMatchResult = match.getJLibMatchResult();
             PureBigraph context = decoder.decode(jLibMatchResult.getContext(), sig());
             PureBigraph redex = decoder.decode(jLibMatchResult.getRedex(), sig());
@@ -484,10 +483,10 @@ public class VendingMachineExample extends BaseExampleTestSupport implements Big
         assert newAgent != null;
         assert param != null;
 
-        MatchIterable<BigraphMatch<PureBigraph>> match3 = matcher.match(newAgent, insertCoinRR2);
-        Iterator<BigraphMatch<PureBigraph>> iterator3 = match3.iterator();
+        MatchIterable<PureBigraphMatch> match3 = (MatchIterable<PureBigraphMatch>) matcher.match(newAgent, insertCoinRR2);
+        Iterator<PureBigraphMatch> iterator3 = match3.iterator();
         if (iterator3.hasNext()) {
-            PureBigraphMatch match = (PureBigraphMatch) iterator3.next();
+            PureBigraphMatch match = iterator3.next();
             Match jLibMatchResult = match.getJLibMatchResult();
             PureBigraph context = decoder.decode(jLibMatchResult.getContext(), sig());
             PureBigraph redex = decoder.decode(jLibMatchResult.getRedex(), sig());

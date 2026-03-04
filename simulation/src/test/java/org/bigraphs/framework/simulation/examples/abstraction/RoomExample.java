@@ -32,7 +32,6 @@ import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
-import org.bigraphs.framework.core.reactivesystem.BigraphMatch;
 import org.bigraphs.framework.core.reactivesystem.InstantiationMap;
 import org.bigraphs.framework.core.reactivesystem.ParametricReactionRule;
 import org.bigraphs.framework.simulation.examples.BaseExampleTestSupport;
@@ -85,15 +84,15 @@ public class RoomExample extends BaseExampleTestSupport {
         toPNG(abstractionRule1.getReactum(), "a1_rhs", TARGET_DUMP_PATH, true);
 //
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agent1, abstractionRule1);
-        Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(agent1, abstractionRule1);
+        Iterator<PureBigraphMatch> iterator = match.iterator();
         int cnt = 0;
         final JLibBigBigraphDecoder decoder = new JLibBigBigraphDecoder();
         PureReactiveSystem system = new PureReactiveSystem();
         system.setAgent(agent1);
         system.addReactionRule(abstractionRule1);
         while (iterator.hasNext()) {
-            PureBigraphMatch next = (PureBigraphMatch) iterator.next();
+            PureBigraphMatch next = iterator.next();
             System.out.println("Match next=" + next);
             PureBigraph ctxDecoded = decoder.decode(next.getJLibMatchResult().getContext(), sig());
             PureBigraph redexImg = decoder.decode(next.getJLibMatchResult().getRedexImage(), sig());
@@ -126,15 +125,15 @@ public class RoomExample extends BaseExampleTestSupport {
         toPNG(abstractionRule1.getReactum(), "2a1_rhs", TARGET_DUMP_PATH, true);
 //
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agent2, abstractionRule1);
-        Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(agent2, abstractionRule1);
+        Iterator<PureBigraphMatch> iterator = match.iterator();
         int cnt = 0;
         final JLibBigBigraphDecoder decoder = new JLibBigBigraphDecoder();
 //        PureReactiveSystem system = new PureReactiveSystem();
 //        system.setAgent(agent2);
 //        system.addReactionRule(abstractionRule1);
         while (iterator.hasNext()) {
-            PureBigraphMatch next = (PureBigraphMatch) iterator.next();
+            PureBigraphMatch next = iterator.next();
             System.out.println("Match next=" + next);
             PureBigraph ctxDecoded = decoder.decode(next.getJLibMatchResult().getContext(), sig());
             PureBigraph redexImg = decoder.decode(next.getJLibMatchResult().getRedexImage(), sig());

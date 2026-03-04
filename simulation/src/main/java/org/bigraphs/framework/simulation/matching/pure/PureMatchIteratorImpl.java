@@ -14,8 +14,8 @@
  */
 package org.bigraphs.framework.simulation.matching.pure;
 
-import java.util.*;
-import org.eclipse.collections.api.list.MutableList;
+import org.bigraphs.framework.core.impl.pure.PureBigraph;
+import org.bigraphs.framework.simulation.matching.AbstractBigraphMatchIterator;
 import org.eclipse.collections.impl.factory.Lists;
 
 /**
@@ -25,14 +25,10 @@ import org.eclipse.collections.impl.factory.Lists;
  *
  * @author Dominik Grzelak
  */
-public class PureMatchIteratorImpl implements Iterator<PureBigraphMatch> {
+public class PureMatchIteratorImpl extends AbstractBigraphMatchIterator<PureBigraph> {
 
-    protected int cursor = 0;
-    protected MutableList<PureBigraphMatch> matches = Lists.mutable.empty();
-    protected PureBigraphMatchingEngine matchingEngine;
-
-    PureMatchIteratorImpl(PureBigraphMatchingEngine matchingEngine) {
-        this.matchingEngine = matchingEngine;
+    public PureMatchIteratorImpl(PureBigraphMatchingEngine matchingEngine) {
+        super(matchingEngine);
         this.findMatches();
     }
 
@@ -43,50 +39,39 @@ public class PureMatchIteratorImpl implements Iterator<PureBigraphMatch> {
      * This can be done to provide simple constraints or filters for the matches.
      */
     protected void findMatches() {
-        this.matchingEngine.beginMatch();
-        if (this.matchingEngine.hasMatched()) {
-            this.matchingEngine.getAllMatches();
+        ((PureBigraphMatchingEngine) this.matchingEngine).beginMatch();
+        if (((PureBigraphMatchingEngine) this.matchingEngine).hasMatched()) {
+            ((PureBigraphMatchingEngine) this.matchingEngine).getAllMatches();
         }
         this.matches = Lists.mutable.ofAll(this.matchingEngine.getMatches());
     }
 
-    @Override
-    public boolean hasNext() {
-        if (matches.isEmpty()) return false;
-        return cursor != matches.size();
-    }
+//    @Override
+//    public boolean hasNext() {
+//        if (matches.isEmpty()) return false;
+//        return cursor != matches.size();
+//    }
 
-    @Override
-    public PureBigraphMatch next() {
-        if (!hasNext()) {
-            throw new NoSuchElementException();
-        }
-        return matches.get(cursor++);
-    }
+//    @Override
+//    public PureBigraphMatch next() {
+//        return super.next();
+//    }
 
-    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Constrained Matcher
-    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static class FirstMatchOnly extends AbstractBigraphMatchIterator.FirstMatchOnly<PureBigraph> {
 
-    /**
-     * A Simple Constrained Matcher Implementation
-     *
-     * @author Dominik Grzelak
-     */
-    public static class FirstMatchOnly extends PureMatchIteratorImpl {
-
-        FirstMatchOnly(PureBigraphMatchingEngine matchingEngine) {
+        public FirstMatchOnly(PureBigraphMatchingEngine matchingEngine) {
             super(matchingEngine);
         }
 
         @Override
         protected void findMatches() {
-            this.matchingEngine.beginMatch();
-            if (this.matchingEngine.hasMatched()) {
-                this.matchingEngine.getSingleMatch();
+            ((PureBigraphMatchingEngine)this.matchingEngine).beginMatch();
+            if (((PureBigraphMatchingEngine)this.matchingEngine).hasMatched()) {
+                ((PureBigraphMatchingEngine)this.matchingEngine).getSingleMatch();
             }
             this.matches = Lists.mutable.ofAll(this.matchingEngine.getMatches());
 
         }
     }
+
 }

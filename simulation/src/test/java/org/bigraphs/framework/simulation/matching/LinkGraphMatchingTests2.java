@@ -41,6 +41,7 @@ import org.bigraphs.framework.core.reactivesystem.ParametricReactionRule;
 import org.bigraphs.framework.core.reactivesystem.ReactionRule;
 import org.bigraphs.framework.simulation.exceptions.BigraphSimulationException;
 import org.bigraphs.framework.simulation.matching.pure.IHSFilter;
+import org.bigraphs.framework.simulation.matching.pure.PureBigraphMatch;
 import org.bigraphs.framework.simulation.matching.pure.PureReactiveSystem;
 import org.bigraphs.framework.simulation.matching.pure.SubHypergraphIsoSearch;
 import org.bigraphs.framework.simulation.modelchecking.BigraphModelChecker;
@@ -105,11 +106,11 @@ public class LinkGraphMatchingTests2 implements org.bigraphs.testing.BigraphUnit
         toPNG(redex, "redex4", TARGET_DUMP_PATH);
 
         AbstractBigraphMatcher<PureBigraph> matcher = AbstractBigraphMatcher.create(PureBigraph.class);
-        MatchIterable<BigraphMatch<PureBigraph>> match = matcher.match(agent, new ParametricReactionRule<>(redex, redex));
-        Iterator<BigraphMatch<PureBigraph>> iterator = match.iterator();
+        MatchIterable<PureBigraphMatch> match = (MatchIterable<PureBigraphMatch>) matcher.match(agent, new ParametricReactionRule<>(redex, redex));
+        Iterator<PureBigraphMatch> iterator = match.iterator();
         int transition = 0;
         while (iterator.hasNext()) {
-            BigraphMatch<?> next = iterator.next();
+            PureBigraphMatch next = iterator.next();
             createGraphvizOutput(agent, next, TARGET_DUMP_PATH + "redex4/" + (transition) + "/");
             transition++;
         }
