@@ -24,6 +24,7 @@ At the same time, the project is logically organized.
   Version are increased simultaneously for all submodules to indicate which dependencies
   can be used together.
 - Version must be set manually for every module and the parent
+- Use `mvn versions:set -DnextSnapshot=true` and `mvn versions:commit`. To revert use `mvn versions:revert`.
 
 ### Check Dependencies
 
