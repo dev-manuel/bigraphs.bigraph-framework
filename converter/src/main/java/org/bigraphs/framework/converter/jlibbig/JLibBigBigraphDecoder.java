@@ -54,12 +54,6 @@ public class JLibBigBigraphDecoder implements BigraphObjectDecoder<PureBigraph, 
         this.jBigraph = bigraph;
         this.signature = signature;
         EPackage ePackage = createOrGetBigraphMetaModel(this.signature);
-//        this.builder = new MutableBuilder<>(signature, EMetaModelData.builder()
-//                .setName(ePackage.getName())
-//                .setNsPrefix(ePackage.getNsPrefix())
-//                .setNsUri(ePackage.getNsURI())
-//                .create()
-//        );
         this.builder = new MutableBuilder<>(signature, ePackage, null);
 
         clearAllMaps();
@@ -99,7 +93,6 @@ public class JLibBigBigraphDecoder implements BigraphObjectDecoder<PureBigraph, 
             OuterName jOuterName = eachEntry.getValue();
             for (Point point : jOuterName.getPoints()) {
                 if (point.isPort()) {
-//                    System.out.println("is port");
                     EditableNode node = ((EditableNode.EditablePort) ((Point) point)).getNode();
                     Node jNode = jLibBigNodes.get(node.getName());
                     BigraphEntity.NodeEntity correspondingNode = newNodes.get(node.getName());
@@ -108,7 +101,6 @@ public class JLibBigBigraphDecoder implements BigraphObjectDecoder<PureBigraph, 
                     // connect port to outer name
                     builder.connectToLinkUsingIndex(correspondingNode, correspondingOuterName, portIndex);
                 } else if (point.isInnerName()) {
-//                    System.out.println("is innername");
                     BigraphEntity.InnerName correspondingInnerName = newInnerNames.get(((InnerName) point).getName());
                     // connect inner name to outer name
                     builder.connectInnerToOuter(correspondingInnerName, correspondingOuterName);

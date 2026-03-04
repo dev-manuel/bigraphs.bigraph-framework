@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+
 import org.bigraphs.framework.converter.jlibbig.JLibBigBigraphDecoder;
 import org.bigraphs.framework.converter.jlibbig.JLibBigBigraphEncoder;
 import org.bigraphs.framework.core.Bigraph;
@@ -55,6 +56,7 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
     protected JLibBigBigraphEncoder encoder = new JLibBigBigraphEncoder();
 
     protected BigraphFilter<B> worklistFilter = BigraphFilter.noop();
+    protected ReactionRuleFilter<B> reactionRuleFilter = ReactionRuleFilter.alwaysAccept();
 
     protected boolean isRunning = true;
 
@@ -144,7 +146,7 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
             Queue<MatchResult<B>> reactionResults = new ConcurrentLinkedQueue<>();
 
             // Reaction Rules
-//            AbstractReactionRuleSupplier<B> inOrder = AbstractReactionRuleSupplier.createInOrder(modelChecker.getReactiveSystem().getReactionRules());
+            // AbstractReactionRuleSupplier<B> inOrder = AbstractReactionRuleSupplier.createInOrder(modelChecker.getReactiveSystem().getReactionRules());
             Stream<ReactionRule<B>> rrStream; // = Stream.generate(inOrder);
             // Sort by priority
             List<ReactionRule<B>> sortedRules = new ArrayList<>(modelChecker.getReactiveSystem().getReactionRules());
@@ -156,6 +158,7 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
             rrStream
                     .limit(modelChecker.getReactiveSystem().getReactionRules().size())
                     .peek(rule -> getListener().onCheckingReactionRule(rule))
+                    .filter(rule -> reactionRuleFilter.accept(rule, theAgent))
                     .flatMap(rule -> {
                         MatchIterable<BigraphMatch<B>> matches = getBigraphMatches(rule, theAgent);
                         for (BigraphMatch<B> match : matches) {
@@ -215,10 +218,37 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
     /**
      * Defaults to {@link BigraphFilter#noop()} unless a subclass overrides this to add logic.
      *
-     * @param filter the filter to apply
+     * @param filter the filter to apply, if {@code null}, the default noop is used.
      */
-    public void setFilter(BigraphFilter<B> filter) {
+    public void setWorklistFilter(BigraphFilter<B> filter) {
         this.worklistFilter = Objects.requireNonNullElse(filter, BigraphFilter.noop());
+    }
+
+    public BigraphFilter<B> getWorklistFilter() {
+        return worklistFilter;
+    }
+
+    /**
+     * Sets the reaction rule filter used during rule exploration.
+     * The filter decides whether a reaction rule should be considered
+     * for a given agent before computing matches.
+     * <p>
+     * If {@code null} is provided, {@link ReactionRuleFilter#alwaysAccept()}
+     * will be used.
+     *
+     * @param filter the reaction rule filter
+     */
+    public void setReactionRuleFilter(ReactionRuleFilter<B> filter) {
+        this.reactionRuleFilter = Objects.requireNonNullElse(filter, ReactionRuleFilter.alwaysAccept());
+    }
+
+    /**
+     * Returns the currently configured reaction rule filter.
+     *
+     * @return the reaction rule filter
+     */
+    public ReactionRuleFilter<B> getReactionRuleFilter() {
+        return reactionRuleFilter;
     }
 
     protected void evaluatePredicates(B agent, String canonical, String root) {
