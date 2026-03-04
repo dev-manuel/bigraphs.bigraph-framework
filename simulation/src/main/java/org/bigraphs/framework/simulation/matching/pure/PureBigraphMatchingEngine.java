@@ -107,7 +107,7 @@ public class PureBigraphMatchingEngine extends BigraphMatchingSupport implements
     /**
      * This methods builds the actual bigraphs determined by the matching algorithm (see {@link #beginMatch()}).
      */
-    protected void createMatchResult() {
+    protected void getAllMatches() {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Matching took: {} (ms)", (matchingTimer.stop().elapsed(TimeUnit.NANOSECONDS) / 1e+6f));
             matchingTimer.reset().start();
@@ -127,7 +127,7 @@ public class PureBigraphMatchingEngine extends BigraphMatchingSupport implements
         }
     }
 
-    protected void createSingleMatchResult() {
+    protected void getSingleMatch() {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Matching took: {} (ms)", (matchingTimer.stop().elapsed(TimeUnit.NANOSECONDS) / 1e+6f));
             matchingTimer.reset().start();

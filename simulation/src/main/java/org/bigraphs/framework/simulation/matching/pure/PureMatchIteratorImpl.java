@@ -18,10 +18,6 @@ import java.util.*;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 
-//TODO: in a future version: find matches incrementally and not all at the start
-//  next() and hasNext() must be slightly rewritten then
-// do not call find
-
 /**
  * Iterator implementation for bigraph matching.
  * <p>
@@ -49,7 +45,7 @@ public class PureMatchIteratorImpl implements Iterator<PureBigraphMatch> {
     protected void findMatches() {
         this.matchingEngine.beginMatch();
         if (this.matchingEngine.hasMatched()) {
-            this.matchingEngine.createMatchResult();
+            this.matchingEngine.getAllMatches();
         }
         this.matches = Lists.mutable.ofAll(this.matchingEngine.getMatches());
     }
@@ -87,7 +83,7 @@ public class PureMatchIteratorImpl implements Iterator<PureBigraphMatch> {
         protected void findMatches() {
             this.matchingEngine.beginMatch();
             if (this.matchingEngine.hasMatched()) {
-                this.matchingEngine.createSingleMatchResult();
+                this.matchingEngine.getSingleMatch();
             }
             this.matches = Lists.mutable.ofAll(this.matchingEngine.getMatches());
 
