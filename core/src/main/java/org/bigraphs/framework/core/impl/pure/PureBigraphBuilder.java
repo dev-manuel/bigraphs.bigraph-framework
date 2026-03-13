@@ -1356,6 +1356,42 @@ public class PureBigraphBuilder<S extends AbstractEcoreSignature<? extends Contr
     }
 
     /**
+     * Creates a mutable bigraph that supports live editing operations.
+     * 
+     * <p>A mutable bigraph allows structural modifications (adding/removing nodes, edges, etc.)
+     * without requiring a complete rebuild. Changes are applied incrementally with O(1) performance.</p>
+     * 
+     * <h2>Usage Example:</h2>
+     * <pre>{@code
+     * PureBigraphMutable bigraph = builder.createMutable();
+     * 
+     * // Add a new node
+     * BigraphEntity.NodeEntity newNode = bigraph.addNode(parentNode, control, "sensor_1");
+     * 
+     * // Remove a node
+     * bigraph.removeNode(nodeToRemove);
+     * }</pre>
+     * 
+     * @return a mutable bigraph instance
+     * @see PureBigraphMutable
+     */
+    public PureBigraphMutable createMutable() {
+        InstanceParameter meta;
+        if (loadedFromFile && Objects.nonNull(loadedInstanceModel)) {
+            meta = new InstanceParameter(metaModel,
+                    loadedInstanceModel,
+                    signature, availableRoots, availableSites,
+                    availableNodes, availableInnerNames, availableOuterNames, availableEdges);
+        } else {
+            meta = new InstanceParameter(metaModel,
+                    signature, availableRoots, availableSites,
+                    availableNodes, availableInnerNames, availableOuterNames, availableEdges);
+            loadedInstanceModel = meta.getbBigraphObject();
+        }
+        return new PureBigraphMutable(meta);
+    }
+
+    /**
      * Converts the current bigraph to a ground bigraph (i.e., no sites an no inner names).
      */
     public void makeGround() {
