@@ -665,6 +665,70 @@ public class PureBigraphMutable extends PureBigraph {
         // 5. Fire event
         fireInnerNameUnlinked(innerName, currentLink);
     }
+
+    /**
+     * Closes a name endpoint by its concrete role.
+     * <p>
+     * Semantics:
+     * <ul>
+     *   <li>Inner name: disconnect from its current link (if any), then remove the inner name.</li>
+     *   <li>Outer name: disconnect all currently attached points, then remove the outer name.</li>
+     * </ul>
+     *
+     * This is a mutable convenience API mirroring the role-specific close behavior while
+     * allowing callers to dispatch on a single method at call-site.
+     *
+     * @param name the name endpoint to close (inner or outer)
+     * @throws IllegalArgumentException if {@code name} is null or not an inner/outer name
+     */
+    public void closeName(BigraphEntity<?> name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+        if (name instanceof BigraphEntity.InnerName) {
+            closeInner((BigraphEntity.InnerName) name);
+            return;
+        }
+        if (name instanceof BigraphEntity.OuterName) {
+            closeOuter((BigraphEntity.OuterName) name);
+            return;
+        }
+        throw new IllegalArgumentException(
+                "Unsupported name type: " + name.getClass().getSimpleName() + " (expected InnerName or OuterName)");
+    }
+
+    /**
+     * Closes an inner name by disconnecting it from its link and removing it from the bigraph.
+     *
+     * @param innerName the inner name to close
+     */
+    public void closeInner(BigraphEntity.InnerName innerName) {
+        if (innerName == null) {
+            throw new IllegalArgumentException("InnerName cannot be null");
+        }
+        disconnectInnerName(innerName);
+        removeInnerName(innerName);
+    }
+
+    /**
+     * Closes an outer name by disconnecting all attached points and removing the outer name.
+     *
+     * @param outerName the outer name to close
+     */
+    public void closeOuter(BigraphEntity.OuterName outerName) {
+        if (outerName == null) {
+            throw new IllegalArgumentException("OuterName cannot be null");
+        }
+        final List<BigraphEntity<?>> points = new ArrayList<>(getPointsFromLink(outerName));
+        for (final BigraphEntity<?> p : points) {
+            if (p instanceof BigraphEntity.Port) {
+                disconnectPort((BigraphEntity.Port) p);
+            } else if (p instanceof BigraphEntity.InnerName) {
+                disconnectInnerName((BigraphEntity.InnerName) p);
+            }
+        }
+        removeOuterName(outerName);
+    }
     
     /**
      * Adds a new outer name to the bigraph.

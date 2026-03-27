@@ -217,4 +217,112 @@ public class SimpleMutableTest {
         assertNotNull(node, "Node should be added to second root");
         assertEquals(1, bigraph.getNodes().size(), "Should have 1 node");
     }
+
+    @Test
+    public void testCloseInnerRemovesInnerAndKeepsOuter() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        BigraphEntity.OuterName outer = bigraph.addOuterName("o");
+        BigraphEntity.InnerName inner = bigraph.addInnerName("i");
+        bigraph.connectInnerNameToLink(inner, outer);
+
+        assertEquals(1, bigraph.getInnerNames().size(), "Should start with 1 inner name");
+        assertEquals(1, bigraph.getOuterNames().size(), "Should start with 1 outer name");
+        assertNotNull(bigraph.getLinkOfPoint(inner), "Inner should be linked before close");
+
+        bigraph.closeInner(inner);
+
+        assertEquals(0, bigraph.getInnerNames().size(), "Inner should be removed by closeInner");
+        assertEquals(1, bigraph.getOuterNames().size(), "Outer should remain after closeInner");
+    }
+
+    @Test
+    public void testCloseOuterRemovesOuterAndKeepsInnerDisconnected() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        BigraphEntity.OuterName outer = bigraph.addOuterName("o");
+        BigraphEntity.InnerName inner = bigraph.addInnerName("i");
+        bigraph.connectInnerNameToLink(inner, outer);
+
+        assertEquals(1, bigraph.getInnerNames().size(), "Should start with 1 inner name");
+        assertEquals(1, bigraph.getOuterNames().size(), "Should start with 1 outer name");
+        assertNotNull(bigraph.getLinkOfPoint(inner), "Inner should be linked before close");
+
+        bigraph.closeOuter(outer);
+
+        assertEquals(1, bigraph.getInnerNames().size(), "Inner should remain after closeOuter");
+        assertEquals(0, bigraph.getOuterNames().size(), "Outer should be removed by closeOuter");
+        assertNull(bigraph.getLinkOfPoint(inner), "Inner should be disconnected after closeOuter");
+    }
+
+    @Test
+    public void testCloseNameDispatchAndValidation() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        BigraphEntity.OuterName outer = bigraph.addOuterName("dispatch_outer");
+        bigraph.closeName(outer);
+        assertEquals(0, bigraph.getOuterNames().size(), "closeName should dispatch to closeOuter");
+
+        BigraphEntity.RootEntity root = bigraph.addRoot();
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> bigraph.closeName(root));
+        assertTrue(ex.getMessage().contains("Unsupported name type"), "Should reject non-name entities");
+    }
+
+    @Test
+    public void testCloseOuterDisconnectsConnectedNodePorts() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        builder.root().child("Room");
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        @SuppressWarnings("unchecked")
+        BigraphEntity.NodeEntity<DynamicControl> node =
+            (BigraphEntity.NodeEntity<DynamicControl>) bigraph.getNodes().toArray()[0];
+        BigraphEntity.OuterName outer = bigraph.addOuterName("port_link");
+
+        BigraphEntity.Port usedPort = bigraph.connectNodeToLink(node, outer);
+        assertNotNull(usedPort, "Connecting node to outer should return the used port");
+        assertNotNull(bigraph.getLinkOfPoint(usedPort), "Used port should be linked before closeOuter");
+
+        bigraph.closeOuter(outer);
+
+        assertEquals(0, bigraph.getOuterNames().size(), "Outer should be removed");
+        assertNull(bigraph.getLinkOfPoint(usedPort), "Used port should be disconnected by closeOuter");
+    }
+
+    @Test
+    public void testCloseInnerWorksForDisconnectedInner() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        BigraphEntity.InnerName inner = bigraph.addInnerName("idle_inner");
+        assertNull(bigraph.getLinkOfPoint(inner), "Inner should start disconnected");
+
+        bigraph.closeInner(inner);
+        assertEquals(0, bigraph.getInnerNames().size(), "Disconnected inner should still be removable via closeInner");
+    }
+
+    @Test
+    public void testCloseNameAndRoleSpecificNullChecks() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        assertThrows(IllegalArgumentException.class, () -> bigraph.closeName(null));
+        assertThrows(IllegalArgumentException.class, () -> bigraph.closeInner((BigraphEntity.InnerName) null));
+        assertThrows(IllegalArgumentException.class, () -> bigraph.closeOuter((BigraphEntity.OuterName) null));
+    }
+
+    @Test
+    public void testCloseOuterOnIdleOuterName() {
+        PureBigraphBuilder<DynamicSignature> builder = BigraphFactory.pureBuilder(signature);
+        PureBigraphMutable bigraph = builder.createMutable();
+
+        BigraphEntity.OuterName outer = bigraph.addOuterName("idle_outer");
+        assertTrue(bigraph.getPointsFromLink(outer).isEmpty(), "Outer should be idle before closeOuter");
+
+        bigraph.closeOuter(outer);
+        assertEquals(0, bigraph.getOuterNames().size(), "Idle outer should be removable");
+    }
 }
