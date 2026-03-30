@@ -288,7 +288,7 @@ _Bigraph Framework_ is Open Source software released under the [Apache 2.0 licen
 
 You should have received a copy of the Apache 2.0 License along with this program. If not, see https://www.apache.org/licenses/LICENSE-2.0.html.
 
-Copyright (c) 2019-2025 Bigraph Toolkit Suite Developers (Main Developer: Dominik Grzelak)
+Copyright (c) 2019-2026 Bigraph Toolkit Suite Developers (Main Developer: Dominik Grzelak)
  
 ### Third Party Licenses
 
