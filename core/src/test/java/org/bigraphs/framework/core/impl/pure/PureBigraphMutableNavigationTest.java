@@ -14,10 +14,10 @@
  */
 package org.bigraphs.framework.core.impl.pure;
 
+import static org.bigraphs.framework.core.factory.BigraphFactory.pureSignatureBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import org.bigraphs.framework.core.datatypes.FiniteOrdinal;
 import org.bigraphs.framework.core.factory.BigraphFactory;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.signature.DynamicControl;
@@ -34,9 +34,9 @@ public class PureBigraphMutableNavigationTest {
     
     @BeforeEach
     public void setup() {
-        signature = BigraphFactory.pureSignatureBuilder()
-            .newControl().identifier("Room").arity(FiniteOrdinal.ofInteger(1)).assign()
-            .newControl().identifier("Computer").arity(FiniteOrdinal.ofInteger(0)).assign()
+        signature = pureSignatureBuilder()
+            .add("Room", 1)
+            .add("Computer", 0)
             .create();
     }
     
@@ -49,11 +49,11 @@ public class PureBigraphMutableNavigationTest {
         BigraphEntity.RootEntity root = bigraph.addRoot();
         
         // 2. Add Parent Node (Room)
-        DynamicControl roomControl = (DynamicControl) signature.getControlByName("Room");
+        DynamicControl roomControl = signature.getControlByName("Room");
         BigraphEntity.NodeEntity<DynamicControl> room = bigraph.addNode(root, roomControl, "room1");
         
         // 3. Add Child Node (Computer)
-        DynamicControl computerControl = (DynamicControl) signature.getControlByName("Computer");
+        DynamicControl computerControl = signature.getControlByName("Computer");
         BigraphEntity.NodeEntity<DynamicControl> computer = bigraph.addNode(room, computerControl, "pc1");
         
         // 4. Verify getChildrenOf(room) contains computer
