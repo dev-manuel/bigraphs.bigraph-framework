@@ -110,27 +110,31 @@ public class PureBigraph implements Bigraph<DynamicSignature>, EcoreBigraph<Dyna
     }
 
     @Override
-    public List<BigraphEntity<?>> getOpenNeighborhoodOfVertex(BigraphEntity<?> node) {
-        MutableList<BigraphEntity<?>> neighbors = Lists.mutable.empty();
-        return neighborhoodHook(neighbors, node);
-    }
+    @SuppressWarnings("unchecked")
+    public List<BigraphEntity<?>> getOpenNeighborhoodOfNode(final BigraphEntity<?> node) {
+        final MutableList<BigraphEntity<?>> neighbors = Lists.mutable.empty();
+        final EObject instance = node.getInstance();
 
-    private List<BigraphEntity<?>> neighborhoodHook(List<BigraphEntity<?>> neighbors, BigraphEntity<?> node) {
-        EObject instance = node.getInstance();
         // first check the children of the node
-        EStructuralFeature chldRef = instance.eClass().getEStructuralFeature(BigraphMetaModelConstants.REFERENCE_CHILD);
-        if (chldRef != null) {
-            EList<EObject> childs = (EList<EObject>) instance.eGet(chldRef);
-            for (EObject each : childs) {
-                addPlaceToList(neighbors, each);
+        final EStructuralFeature childRef =
+                instance.eClass().getEStructuralFeature(BigraphMetaModelConstants.REFERENCE_CHILD);
+        if (childRef != null) {
+            final EList<EObject> children = (EList<EObject>) instance.eGet(childRef);
+            for (EObject child : children) {
+                addPlaceToList(neighbors, child);
             }
         }
+
         // second, the parent
-        EStructuralFeature prntRef = instance.eClass().getEStructuralFeature(BigraphMetaModelConstants.REFERENCE_PARENT);
-        if (prntRef != null && instance.eGet(prntRef) != null) {
-            final EObject each = (EObject) instance.eGet(prntRef);
-            addPlaceToList(neighbors, each);
+        final EStructuralFeature parentRef =
+                instance.eClass().getEStructuralFeature(BigraphMetaModelConstants.REFERENCE_PARENT);
+        if (parentRef != null) {
+            final EObject parent = (EObject) instance.eGet(parentRef);
+            if (parent != null) {
+                addPlaceToList(neighbors, parent);
+            }
         }
+
         return neighbors;
     }
 
@@ -152,13 +156,13 @@ public class PureBigraph implements Bigraph<DynamicSignature>, EcoreBigraph<Dyna
             list.add(
                     getRoots().stream()
                             .filter(x -> x.getInstance().equals(each))
-                            .findFirst().get()
+                            .findFirst().orElseThrow(() -> new IllegalStateException("No root found for EObject: " + each))
             );
         } else if (isBSite(each)) {
             list.add(
                     getSites().stream()
                             .filter(x -> x.getInstance().equals(each))
-                            .findFirst().get()
+                            .findFirst().orElseThrow(() -> new IllegalStateException("No site found for EObject: " + each))
             );
         }
     }
@@ -187,7 +191,6 @@ public class PureBigraph implements Bigraph<DynamicSignature>, EcoreBigraph<Dyna
 
     @Override
     public List<BigraphEntity<?>> getAllPlaces() {
-//        return Lists.fixedSize.fromStream(Streams.<BigraphEntity<?>>concat((Stream) roots.stream(), (Stream) nodes.stream(), (Stream) sites.stream()));
         return Lists.fixedSize.<BigraphEntity<?>>ofAll((Iterable) getRoots())
                 .withAll(getNodes())
                 .withAll(getSites());

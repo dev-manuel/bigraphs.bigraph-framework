@@ -244,7 +244,7 @@ public interface Bigraph<S extends Signature<?>> extends HasSignature<S> {
      * @param node the nodes who's neighborhood should be returned
      * @return the neighborhood of the node of the place graph
      */
-    List<BigraphEntity<?>> getOpenNeighborhoodOfVertex(BigraphEntity<?> node);
+    List<BigraphEntity<?>> getOpenNeighborhoodOfNode(BigraphEntity<?> node);
 
     Collection<BigraphEntity.RootEntity> getRoots();
 

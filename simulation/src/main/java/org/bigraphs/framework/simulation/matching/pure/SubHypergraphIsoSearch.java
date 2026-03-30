@@ -154,7 +154,7 @@ public class SubHypergraphIsoSearch {
     }
 
     private boolean candidateGenWithBFS(BigraphEntity.NodeEntity<?> u_s, BigraphEntity.NodeEntity<?> v_s) {
-        Traverser<BigraphEntity> traverser = Traverser.forGraph(redex::getOpenNeighborhoodOfVertex);
+        Traverser<BigraphEntity> traverser = Traverser.forGraph(redex::getOpenNeighborhoodOfNode);
         int rootCnt = redex.getRoots().size();
         BigraphEntity<?>[] startNodes = new BigraphEntity[rootCnt];
         startNodes[0] = u_s;

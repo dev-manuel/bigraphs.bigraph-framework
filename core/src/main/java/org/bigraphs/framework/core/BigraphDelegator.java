@@ -103,8 +103,8 @@ public abstract class BigraphDelegator<S extends Signature<?>> implements Bigrap
     }
 
     @Override
-    public List<BigraphEntity<?>> getOpenNeighborhoodOfVertex(BigraphEntity<?> node) {
-        return bigraphDelegate.getOpenNeighborhoodOfVertex(node);
+    public List<BigraphEntity<?>> getOpenNeighborhoodOfNode(BigraphEntity<?> node) {
+        return bigraphDelegate.getOpenNeighborhoodOfNode(node);
     }
 
     @Override

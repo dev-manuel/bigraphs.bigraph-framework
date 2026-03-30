@@ -37,7 +37,7 @@ public class KindBigraph implements Bigraph<KindSignature>, EcoreBigraph<KindSig
     }
 
     @Override
-    public List<BigraphEntity<?>> getOpenNeighborhoodOfVertex(BigraphEntity<?> node) {
+    public List<BigraphEntity<?>> getOpenNeighborhoodOfNode(BigraphEntity<?> node) {
         return null;
     }
 

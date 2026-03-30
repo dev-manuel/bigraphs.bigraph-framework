@@ -154,7 +154,7 @@ public class PureCanonicalForm extends BigraphCanonicalFormStrategy<PureBigraph>
                 places0.add(s);
             }
 //            places0.addAll((Collection<? extends BigraphEntity<?>>) bigraph.getSites());
-            int maxDegree = bigraph.getOpenNeighborhoodOfVertex(theParent).size();
+            int maxDegree = bigraph.getOpenNeighborhoodOfNode(theParent).size();
             LinkedList<BigraphEntity<?>> lastOrdering = new LinkedList<>();
             while (!frontier.isEmpty()) {
 //                List<BigraphEntity<?>> placesSorted = places0.stream().sorted(levelComp2).collect(Collectors.toList());
@@ -172,7 +172,7 @@ public class PureCanonicalForm extends BigraphCanonicalFormStrategy<PureBigraph>
                             BigraphUtil.setParentOfNode(u, parent);
                         }
                         //single-step bottom-up approach
-                        List<BigraphEntity<?>> openNeighborhoodOfVertex = bigraph.getOpenNeighborhoodOfVertex(u);
+                        List<BigraphEntity<?>> openNeighborhoodOfVertex = bigraph.getOpenNeighborhoodOfNode(u);
                         if (maxDegree < openNeighborhoodOfVertex.size()) {
                             maxDegree = openNeighborhoodOfVertex.size();
                         }

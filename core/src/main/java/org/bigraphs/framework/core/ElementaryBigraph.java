@@ -247,8 +247,8 @@ public abstract class ElementaryBigraph<S extends AbstractEcoreSignature<? exten
     }
 
     @Override
-    public List<BigraphEntity<?>> getOpenNeighborhoodOfVertex(BigraphEntity<?> node) {
-        if (Objects.nonNull(bigraphDelegate)) return bigraphDelegate.getOpenNeighborhoodOfVertex(node);
+    public List<BigraphEntity<?>> getOpenNeighborhoodOfNode(BigraphEntity<?> node) {
+        if (Objects.nonNull(bigraphDelegate)) return bigraphDelegate.getOpenNeighborhoodOfNode(node);
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
