@@ -25,9 +25,11 @@ import org.bigraphs.framework.core.datatypes.FiniteOrdinal;
 import org.bigraphs.framework.core.exceptions.IncompatibleSignatureException;
 import org.bigraphs.framework.core.exceptions.SignatureNotConsistentException;
 import org.bigraphs.framework.core.exceptions.operations.IncompatibleInterfaceException;
+import org.bigraphs.framework.core.factory.BigraphFactory;
 import org.bigraphs.framework.core.impl.BigraphEntity;
 import org.bigraphs.framework.core.impl.pure.PureBigraph;
 import org.bigraphs.framework.core.impl.pure.PureBigraphBuilder;
+import org.bigraphs.framework.core.impl.pure.PureBigraphMutable;
 import org.bigraphs.framework.core.impl.signature.DynamicControl;
 import org.bigraphs.framework.core.impl.signature.DynamicSignature;
 import org.bigraphs.framework.core.impl.signature.DynamicSignatureBuilder;
@@ -95,6 +97,46 @@ public class BigraphUtil {
 
     public static PureBigraph toBigraph(EPackage metaModel, EObject instanceModel, DynamicSignature signature) {
         return PureBigraphBuilder.create(signature.getInstanceModel(), metaModel, instanceModel).create();
+    }
+
+    /**
+     * Converts an in-memory bigraph {@link EObject} (loaded from XMI) together with its signature
+     * into a mutable {@link PureBigraphMutable}.
+     *
+     * @param instanceModel the raw EMF instance model of the bigraph
+     * @param signature     the signature matching the instance model
+     * @return a mutable bigraph
+     */
+    public static PureBigraphMutable toMutable(EObject instanceModel, DynamicSignature signature) {
+        EPackage metaModel = instanceModel.eClass().getEPackage();
+        PureBigraph immutable = toBigraph(metaModel, instanceModel, signature);
+        return PureBigraphBuilder
+                .create(signature, immutable.getMetaModel(), immutable.getInstanceModel())
+                .createMutable();
+    }
+
+    /**
+     * Creates an empty {@link PureBigraphMutable} with a single root and the given signature.
+     * If {@code signature} is {@code null} an empty signature is used.
+     *
+     * @param signature the signature to use, or {@code null} for an empty signature
+     * @return a fresh, empty mutable bigraph
+     */
+    public static PureBigraphMutable createEmptyMutable(DynamicSignature signature) {
+        DynamicSignature sig = signature != null ? signature : BigraphFactory.pureSignatureBuilder().create();
+        PureBigraph emptyImmutable = BigraphFactory.pureBuilder(sig).root().create();
+        return PureBigraphBuilder
+                .create(sig, emptyImmutable.getMetaModel(), emptyImmutable.getInstanceModel())
+                .createMutable();
+    }
+
+    /**
+     * Convenience overload: creates an empty {@link PureBigraphMutable} with an empty signature.
+     *
+     * @return a fresh, empty mutable bigraph
+     */
+    public static PureBigraphMutable createEmptyMutable() {
+        return createEmptyMutable(null);
     }
 
     public static void setParentOfNode(final BigraphEntity<?> node, final BigraphEntity<?> parent) {
