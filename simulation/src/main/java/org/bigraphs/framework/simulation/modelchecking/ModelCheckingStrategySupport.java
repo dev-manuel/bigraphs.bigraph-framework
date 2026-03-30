@@ -220,10 +220,12 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
      *
      * @param filter the filter to apply, if {@code null}, the default noop is used.
      */
+    @Override
     public void setWorklistFilter(BigraphFilter<B> filter) {
         this.worklistFilter = Objects.requireNonNullElse(filter, BigraphFilter.noop());
     }
 
+    @Override
     public BigraphFilter<B> getWorklistFilter() {
         return worklistFilter;
     }
@@ -238,6 +240,7 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
      *
      * @param filter the reaction rule filter
      */
+    @Override
     public void setReactionRuleFilter(ReactionRuleFilter<B> filter) {
         this.reactionRuleFilter = Objects.requireNonNullElse(filter, ReactionRuleFilter.alwaysAccept());
     }
@@ -247,6 +250,7 @@ public abstract class ModelCheckingStrategySupport<B extends Bigraph<? extends S
      *
      * @return the reaction rule filter
      */
+    @Override
     public ReactionRuleFilter<B> getReactionRuleFilter() {
         return reactionRuleFilter;
     }

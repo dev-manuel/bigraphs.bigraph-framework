@@ -37,4 +37,12 @@ public interface ModelCheckingStrategy<B extends Bigraph<? extends Signature<?>>
      * The reaction graph (i.e., transition system) can be acquired and stored via the model checker object.
      */
     void synthesizeTransitionSystem();
+
+    void setWorklistFilter(BigraphFilter<B> filter);
+
+    BigraphFilter<B> getWorklistFilter();
+
+    void setReactionRuleFilter(ReactionRuleFilter<B> filter);
+
+    ReactionRuleFilter<B> getReactionRuleFilter();
 }

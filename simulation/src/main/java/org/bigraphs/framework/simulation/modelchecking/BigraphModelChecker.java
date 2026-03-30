@@ -290,6 +290,10 @@ public abstract class BigraphModelChecker<B extends Bigraph<? extends Signature<
         }
     }
 
+    public ModelCheckingStrategy<B> getModelCheckingStrategy() {
+        return modelCheckingStrategy;
+    }
+
     public ReactiveSystem<B> getReactiveSystem() {
         return reactiveSystem;
     }
